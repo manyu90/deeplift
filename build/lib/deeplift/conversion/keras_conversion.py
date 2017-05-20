@@ -46,9 +46,6 @@ def batchnorm_conversion(layer, name, verbose, **kwargs):
     )] 
 
 
-def permute(layer, name, verbose, **kwargs):
-    return [blobs.Permute(name=name)]
-
 def conv1d_conversion(layer, name, verbose,
                       nonlinear_mxts_mode, conv_mxts_mode, **kwargs):
     #nonlinear_mxts_mode only used for activation
@@ -257,8 +254,7 @@ def layer_name_to_conversion_function(layer_name):
         'activation': activation_conversion, 
         'prelu': prelu_conversion,
         'sequential': sequential_container_conversion,
-        'merge': merge_conversion,
-        'permute':permute
+        'merge': merge_conversion
     }
 
     # lowercase to create resistance to capitalization changes
