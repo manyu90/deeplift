@@ -12,6 +12,8 @@ from .helper_functions import (
  pseudocount_near_zero, add_val_to_col)
 from . import helper_functions as hf
 import tensorflow as tf
+from keras import backend as K
+
 
 
 ScoringMode = deeplift.util.enum(OneAndZeros="OneAndZeros",
@@ -803,6 +805,37 @@ class Permute(SingleInputMixin, Node):
         pos_mxts = tf.transpose(pos_mxts, perm=[0, 2, 1])
         neg_mxts = tf.transpose(neg_mxts, perm=[0, 2, 1])
         return pos_mxts, neg_mxts
+
+
+class Reshape(SingleInputMixin,Node):
+    def __init__(self,  **kwargs):
+        super(Reshape, self).__init__(**kwargs)
+
+    def _build_activation_vars(self,input_act_vars):
+        interval_size = K.int_shape(x)[-1]
+        to_return=tf.reshape(input_act_vars,[interval_size,1])
+        return to_return
+
+    def _check_inputs(self):
+        pass
+
+    def _build_pos_and_neg_contribs(self):
+        inp_pos_contribs, inp_neg_contribs =\
+            self._get_input_pos_and_neg_contribs()
+        pos_contribs = self._build_activation_vars(inp_pos_contribs) 
+        neg_contribs = self._build_activation_vars(inp_neg_contribs)
+        return pos_contribs, neg_contribs    
+
+
+    def _get_mxts_increments_for_inputs(self):
+        pos_mxts = self.get_pos_mxts()
+        neg_mxts = self.get_neg_mxts()
+        pos_mxts=self._build_activation_vars(pos_mxts)
+        neg_mxts=self._build_activation_vars(neg_mxts)
+        return pos_mxts,neg_mxts
+
+
+
 
 class Concat(OneDimOutputMixin, Merge):
 

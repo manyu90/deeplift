@@ -49,6 +49,10 @@ def batchnorm_conversion(layer, name, verbose, **kwargs):
 def permute(layer, name, verbose, **kwargs):
     return [blobs.Permute(name=name)]
 
+def reshape(layer,name,verobse, **kwargs):
+    return [blobs.Reshape(name=name)]  
+
+
 def conv1d_conversion(layer, name, verbose,
                       nonlinear_mxts_mode, conv_mxts_mode, **kwargs):
     #nonlinear_mxts_mode only used for activation
@@ -258,11 +262,13 @@ def layer_name_to_conversion_function(layer_name):
         'prelu': prelu_conversion,
         'sequential': sequential_container_conversion,
         'merge': merge_conversion,
-        'permute':permute
+        'permute':permute,
+        'reshape':reshape
     }
 
     # lowercase to create resistance to capitalization changes
     # was a problem with previous Keras versions
+#print (name_dict.keys())
     return name_dict[layer_name.lower()]
 
 
