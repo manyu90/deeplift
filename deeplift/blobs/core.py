@@ -762,9 +762,9 @@ class Merge(ListInputMixin, Node):
             lengths_for_that_dim = [input_shape[dim_idx]
                                     for input_shape in input_shapes]
             if (dim_idx != self.axis):
-                print(input_shapes)
-                print(self.axis)
-                print(dim_idx)
+                # print(input_shapes)
+                # print(self.axis)
+                # print(dim_idx)
                 assert len(set(lengths_for_that_dim))==1,\
                        "lengths for dim "+str(dim_idx)\
                        +" should be the same, got: "+str(lengths_for_that_dim)
@@ -818,7 +818,7 @@ class Reshape(SingleInputMixin,Node):
 
     def _compute_shape(self,input_shape):
         #shape=K.int_shape(input_act_vars)
-        print(input_shape)
+        #print(input_shape)
         output_shape = [k for k in input_shape]+[1]
         #return output_shape+[1]
         #output_shape=[None,input_shape[1],1]
