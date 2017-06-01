@@ -753,6 +753,8 @@ class Merge(ListInputMixin, Node):
     def _compute_shape(self, input_shape):
         shape = []
         input_shapes = [an_input.get_shape() for an_input in self.inputs]
+        if (self.axis < 0):
+            self.axis = len(input_shapes)+1+self.axis
         assert len(set(len(x) for x in input_shapes))==1,\
           "all inputs should have the same num"+\
           " of dims - got: "+str(input_shapes)
@@ -760,6 +762,9 @@ class Merge(ListInputMixin, Node):
             lengths_for_that_dim = [input_shape[dim_idx]
                                     for input_shape in input_shapes]
             if (dim_idx != self.axis):
+                print(input_shapes)
+                print(self.axis)
+                print(dim_idx)
                 assert len(set(lengths_for_that_dim))==1,\
                        "lengths for dim "+str(dim_idx)\
                        +" should be the same, got: "+str(lengths_for_that_dim)
@@ -811,9 +816,21 @@ class Reshape(SingleInputMixin,Node):
     def __init__(self,  **kwargs):
         super(Reshape, self).__init__(**kwargs)
 
+    def _compute_shape(self,input_shape):
+        #shape=K.int_shape(input_act_vars)
+        print(input_shape)
+        output_shape = [k for k in input_shape]+[1]
+        #return output_shape+[1]
+        #output_shape=[None,input_shape[1],1]
+        return [None,1000,1]
+
     def _build_activation_vars(self,input_act_vars):
-        interval_size = K.int_shape(x)[-1]
-        to_return=tf.reshape(input_act_vars,[interval_size,1])
+        # import IPython
+        # IPython.embed()
+        shape=K.int_shape(input_act_vars)
+        interval_size = K.int_shape(input_act_vars)[-1]
+
+        to_return=tf.reshape(input_act_vars,[-1,1000,1])
         return to_return
 
     def _check_inputs(self):
@@ -830,9 +847,9 @@ class Reshape(SingleInputMixin,Node):
     def _get_mxts_increments_for_inputs(self):
         pos_mxts = self.get_pos_mxts()
         neg_mxts = self.get_neg_mxts()
-        pos_mxts=self._build_activation_vars(pos_mxts)
-        neg_mxts=self._build_activation_vars(neg_mxts)
-        return pos_mxts,neg_mxts
+        pos_mxts_inp = tf.reshape(pos_mxts,[-1,1000])
+        neg_mxts_inp = tf.reshape(neg_mxts, [-1,1000])
+        return pos_mxts_inp,neg_mxts_inp
 
 
 
