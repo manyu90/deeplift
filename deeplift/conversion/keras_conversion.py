@@ -49,7 +49,7 @@ def batchnorm_conversion(layer, name, verbose, **kwargs):
 def permute(layer, name, verbose, **kwargs):
     return [blobs.Permute(name=name)]
 
-def reshape(layer,name,verobse, **kwargs):
+def reshape(layer,name,verbose, **kwargs):
     return [blobs.Reshape(name=name)]  
 
 
